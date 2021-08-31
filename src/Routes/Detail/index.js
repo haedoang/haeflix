@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import Helmet from 'react-helmet';
 import Loader from '../../Components/Loader';
 import Message from '../../Components/Message';
+import { FaImdb } from 'react-icons/fa';
+
 
 const Container = styled.div`
     height : calc(100vh - 50px);
@@ -57,6 +59,9 @@ const ItemContainer = styled.div`
     margin : 20px 0;
 `;
 
+const ButtonContainer = styled.div`
+    margin : 20px 0`;
+
 const Item = styled.span``;
 
 const Divider = styled.span`
@@ -75,8 +80,11 @@ const Detail = ({ location : {pathname},  match : {  params : { id }}, history :
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [isMovie, setIsMovie] = useState(pathname.includes("/movie/"));
+    const isMovie = pathname.includes("/movie/");
     
+    const getImdbAddress = (imdb_id) => {
+        return `https://www.imdb.com/title/${imdb_id}`;
+    }
     const getDetail = async () => {
         const parsedId = parseInt(id);
         if(isNaN(parsedId)){
@@ -87,9 +95,11 @@ const Detail = ({ location : {pathname},  match : {  params : { id }}, history :
             if(isMovie) {
                 const request  = await movieApi.movieDetail(parsedId);
                 result = request.data;
+                console.log('movie,', result);
             }
             else {
                 ({ data : result } = await tvApi.tvDetail(parsedId));
+                console.log('tv,', result);
                 
             }
             setResult(result);
@@ -117,7 +127,7 @@ const Detail = ({ location : {pathname},  match : {  params : { id }}, history :
             <Helmet><title>{result.original_title ? result.original_title : result.original_name } | Haefilx</title></Helmet>
             <Backdrop bgImage={`https://image.tmdb.org/t/p/original/${result.backdrop_path}`}/>
             <Content >
-                <Cover bgImage={result.poster_path ? `https://image.tmdb.org/t/p/original/${result.poster_path}` : requrie("../../assets/noPoster.png")} />
+                <Cover bgImage={result.poster_path ? `https://image.tmdb.org/t/p/original/${result.poster_path}` : requrie("../../assets/noPoster.png").default} />
                 <Data>
                     <Title>{result.original_title ? result.original_title : result.original_name }</Title>
                     <ItemContainer>
@@ -126,13 +136,17 @@ const Detail = ({ location : {pathname},  match : {  params : { id }}, history :
                         </Item>
                         <Divider>·</Divider>
                         <Item>
-                        {result.runtime ? result.runtime : result.episode_run_time} min
+                            {result.runtime ? result.runtime : result.episode_run_time} min
                         </Item>
                         <Divider>·</Divider>
                         <Item>
-                        {result.genres && result.genres.map( (genre, index) => index === result.genres.length -1 ? genre.name : `${genre.name}/`)}
+                            {result.genres && result.genres.map( (genre, index) => index === result.genres.length -1 ? genre.name : `${genre.name}/`)}
                         </Item>
+                        <Divider>·</Divider>
                     </ItemContainer>
+                    <ButtonContainer>
+                        {result.imdb_id && <FaImdb className="react-icons" size="55"/>}
+                    </ButtonContainer>
                     <Overview>{result.overview}</Overview>
                 </Data>
             </Content>

@@ -17,6 +17,9 @@ const GlobalStyles = createGlobalStyle`
         color :white;
         padding-top : 50px
     }
+    .react-icons : hover {
+        color : grey;
+    }
 
 `;
 

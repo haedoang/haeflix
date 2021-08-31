@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
 import Section from '../../Components/Section';
+import Poster from '../../Components/Poster';
 import Loader from '../../Components/Loader';
 import Message from '../../Components/Message';
-import Poster from '../../Components/Poster';
 import Helmet from 'react-helmet';
 import { tvApi } from '../../api';
 

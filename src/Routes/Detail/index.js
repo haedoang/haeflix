@@ -5,6 +5,11 @@ import Helmet from 'react-helmet';
 import Loader from '../../Components/Loader';
 import Message from '../../Components/Message';
 import { FaImdb } from 'react-icons/fa';
+import { BsFillCollectionFill } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
+
+import MovieDetailTab from './MovieDetailTab';
+import TvDetailTab from './TvDetailTab';
 
 
 const Container = styled.div`
@@ -75,6 +80,12 @@ const Overview = styled.p`
     width : 50%;
 `;
 
+const ALink = styled.a`
+
+`;
+
+const TabContainer = styled.div``;
+
 
 const Detail = ({ location : {pathname},  match : {  params : { id }}, history : { push }}) => {
     const [result, setResult] = useState(null);
@@ -127,7 +138,7 @@ const Detail = ({ location : {pathname},  match : {  params : { id }}, history :
             <Helmet><title>{result.original_title ? result.original_title : result.original_name } | Haefilx</title></Helmet>
             <Backdrop bgImage={`https://image.tmdb.org/t/p/original/${result.backdrop_path}`}/>
             <Content >
-                <Cover bgImage={result.poster_path ? `https://image.tmdb.org/t/p/original/${result.poster_path}` : requrie("../../assets/noPoster.png").default} />
+                <Cover bgImage={result.poster_path ? `https://image.tmdb.org/t/p/original/${result.poster_path}` : require("../../assets/noPoster.png").default} />
                 <Data>
                     <Title>{result.original_title ? result.original_title : result.original_name }</Title>
                     <ItemContainer>
@@ -145,9 +156,14 @@ const Detail = ({ location : {pathname},  match : {  params : { id }}, history :
                         <Divider>·</Divider>
                     </ItemContainer>
                     <ButtonContainer>
-                        {result.imdb_id && <FaImdb className="react-icons" size="55"/>}
+                        {result.imdb_id && <ALink href={getImdbAddress(result.imdb_id) } target="_blank" ><FaImdb className="react-icons" size="55"/></ALink>}
+                        {result.belongs_to_collection && <Link to={`/collections/${result.belongs_to_collection.id}`}><BsFillCollectionFill size="55"/></Link>}
                     </ButtonContainer>
                     <Overview>{result.overview}</Overview>
+                        <TabContainer>
+                           { isMovie ? <MovieDetailTab movie={result} /> : <TvDetailTab tv={result} /> }
+                        </TabContainer>
+                        
                 </Data>
             </Content>
         </Container>

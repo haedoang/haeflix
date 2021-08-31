@@ -14,14 +14,15 @@ export const movieApi = {
     popular : () => api.get("movie/popular"),
     movieDetail : id => api.get(`movie/${id}`,{
         params : { 
-            append_to_reponse : "videos"
+            append_to_response : "videos",
         }
     }),
     search : term => api.get("search/movie",{
         params : {
             query : encodeURIComponent(term)
         }
-    })
+    }),
+    collections : id => api.get(`collection/${id}`)
 }
 
 export const tvApi = {

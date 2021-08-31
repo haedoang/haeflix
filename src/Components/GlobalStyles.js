@@ -18,7 +18,8 @@ const GlobalStyles = createGlobalStyle`
         padding-top : 50px
     }
     .react-icons : hover {
-        color : grey;
+        color : #ffeaa7;
+        cursor : pointer;
     }
 
 `;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from 'react';
 import styled from 'styled-components';
 import Section from '../../Components/Section';
 import Loader from '../../Components/Loader';
@@ -6,45 +6,31 @@ import Message from '../../Components/Message';
 import Poster from '../../Components/Poster';
 import Helmet from 'react-helmet';
 import { tvApi } from '../../api';
+import { useQuery } from 'react-query';
 
 const Container = styled.div`
     padding : 20px;
 `;
 
 const TV = () => {
-    const [topRated, setTopRated] = useState(null);
-    const [popular, setPopular] = useState(null);
-    const [airingToday, setAiringToday] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const {isLoading : loading1, isError : isError1, error : error1, data : data1, isFetching : isFetching1 } =  useQuery('topRated', tvApi.topRated);
+    const {isLoading : loading2, isError : isError2, error : error2, data : data2, isFetchhing : isFetching2 } = useQuery('popular', tvApi.popular);
+    const {isLoading : loading3, isError : isError3, error : error3, data : data3, isFetching : isFetching3 } = useQuery('airingToday', tvApi.airingToday);
+ 
+    const topRated = data1?.data?.results;
+    const popular = data2?.data?.results;
+    const airingToday = data3?.data?.results;
 
-    const fetchAPI = async () => {
-        try {
-            const {data : {results : topRated}} = await tvApi.topRated();
-            const {data : {results : popular}} = await tvApi.popular();
-            const {data : {results : airingToday}} = await tvApi.airingToday();
-            setTopRated(topRated);
-            setPopular(popular);
-            setAiringToday(airingToday);
-        } catch(error){
-            setError("something wrong..")
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    useEffect(()=>{
-        fetchAPI();
-    }, []);
-
+    console.log('isError1',isError1);
+    console.log('isError2',isError2);
+    console.log('isError3',isError3);
     return (
         <>
             <Helmet>
                 <title>TV | Haeflix</title>
             </Helmet>
-            {loading ? <Loader/> : (
+            {loading1 || loading2 || loading3 ? <Loader/> : (
                 <Container>
-                    
                     {topRated && topRated.length > 0 && (
                         <Section title="Top Rated Show">
                             {
@@ -88,7 +74,7 @@ const TV = () => {
                                     />)  
                             
                             )}</Section>)}
-                    { error && <Message text={error} color="red" />}
+                    { (isError1 || isError2 || isError3) && <Message text={isError1 ? error1.message : isError2 ? error2.message : error3.message } color="red" />}
                 </Container>    
                 )}
         </>
